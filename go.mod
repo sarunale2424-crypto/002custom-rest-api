@@ -1,0 +1,3 @@
+module 002custom-rest-api
+
+go 1.22.2

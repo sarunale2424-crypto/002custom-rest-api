@@ -3,13 +3,17 @@ package models
 import "time"
 
 type Item struct {
-	ID        uint      `json:"id"`
+	ID        int       `json:"id"`
 	Name      string    `json:"name"`
 	Price     float64   `json:"price"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func NewItem(id uint, name string, price float64, created_at time.Time) Item {
+type ItemStore struct {
+	Items []Item
+}
+
+func NewItem(id int, name string, price float64, created_at time.Time) Item {
 	return Item{
 		ID:        id,
 		Name:      name,
