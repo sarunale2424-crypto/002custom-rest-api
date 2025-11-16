@@ -14,19 +14,19 @@ import (
 var items []models.Item
 
 func findItem(id int) error {
-	for index, _ := range items {
+	for index := range items {
 		if items[index].ID == id {
 			return nil
 		}
 	}
-	return errors.New("Specified id not found")
+	return errors.New("specified id not found")
 
 }
 func main() {
 	//Initialise initial values for items
 	items = []models.Item{
-		{1, "Salt", 0.40, time.Now()},
-		{2, "Rice", 5.40, time.Now()},
+		{ID: 1, Name: "Salt", Price: 0.40, CreatedAt: time.Now()},
+		{ID: 2, Name: "Rice", Price: 5.40, CreatedAt: time.Now()},
 	}
 
 	//setup router
@@ -70,7 +70,7 @@ func main() {
 			return
 
 		} else {
-			for index, _ := range items {
+			for index := range items {
 				if items[index].ID != idInt {
 					newItems = append(newItems, items[index])
 				} else {
@@ -91,7 +91,30 @@ func main() {
 	router.HandleFunc("DELETE /items/{id}", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 		id := r.PathValue("id")
-		json.NewEncoder(w).Encode(map[string]interface{}{"message": "DELETE method", "id": id})
+
+		var newItems []models.Item
+
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "invlalid ID," + err.Error()})
+			return
+		}
+
+		err = findItem(idInt)
+		if err != nil {
+			json.NewEncoder(w).Encode(map[string]interface{}{"method": "PUT method", "error": err.Error()})
+			return
+
+		} else {
+			for index := range items {
+				if items[index].ID != idInt {
+					newItems = append(newItems, items[index])
+				}
+			}
+			items = newItems
+
+		}
+		json.NewEncoder(w).Encode(map[string]interface{}{"method": "DELETE method", "message": "successfully deleted item"})
 	})
 
 	//setup server

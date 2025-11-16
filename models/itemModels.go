@@ -9,10 +9,6 @@ type Item struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type ItemStore struct {
-	Items []Item
-}
-
 func NewItem(id int, name string, price float64, created_at time.Time) Item {
 	return Item{
 		ID:        id,
